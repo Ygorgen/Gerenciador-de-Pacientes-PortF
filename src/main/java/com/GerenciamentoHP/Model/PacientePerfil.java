@@ -1,7 +1,6 @@
 package com.GerenciamentoHP.Model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,6 +13,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -28,12 +28,12 @@ public class PacientePerfil {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long atendimento;
 
     @NotBlank
     private String nome;
 
-    private Integer atendimento;
+    private Integer rg;
 
     @NotNull
     private LocalDate dataNascimento;
@@ -41,13 +41,17 @@ public class PacientePerfil {
     private String plano;
 
     @CreatedDate
-    private LocalDateTime dataCadastro;
+    private LocalDate dataCadastro;
 
     @LastModifiedDate
-    private LocalDateTime ultimaConsulta;
+    private LocalDate ultimaConsulta;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pacientePerfil", cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties("pacientePerfil")
     private List<FichaPaciente> fichaPaciente;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("pacientePerfil")
+    private Setor setor;
 
 }
