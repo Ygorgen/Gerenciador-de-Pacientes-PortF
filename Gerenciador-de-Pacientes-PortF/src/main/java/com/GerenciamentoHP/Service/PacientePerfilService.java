@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.GerenciamentoHP.DTO.PacientePerfilDto;
 import com.GerenciamentoHP.Model.PacientePerfil;
 import com.GerenciamentoHP.Repository.PacientePerfilRepository;
@@ -34,12 +33,18 @@ public class PacientePerfilService {
         return pacientePerfilRepository.save(paciente);
     }
 
-    public List<PacientePerfil> getAll() {
+    public List<PacientePerfil> verTodosPacientes() {
         return pacientePerfilRepository.findAll();
     }
 
-    public Optional<PacientePerfil> findByRg(Integer rg) {
-        return pacientePerfilRepository.findByrg(rg);
+    public ResponseEntity<PacientePerfil> buscarPorRg(Integer rg) {
+        return pacientePerfilRepository.findByrg(rg)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    public Optional<PacientePerfil> findByAtendimento(Long atendimento) {
+        return pacientePerfilRepository.findById(atendimento);
     }
 
     public ResponseEntity<PacientePerfil> atualizarPacientePerfil(PacientePerfil pacientePerfil) {
@@ -49,12 +54,25 @@ public class PacientePerfilService {
 
         return pacientePerfilRepository.findById(pacientePerfil.getAtendimento())
                 .map(existente -> {
-                   
+
+                    existente.setNome(pacientePerfil.getNome());
+                    existente.setRg(pacientePerfil.getRg());
+                    existente.setPlano(pacientePerfil.getPlano());
                     existente.setSetor(pacientePerfil.getSetor());
-                   
+
                     return ResponseEntity.status(HttpStatus.CREATED)
                             .body(pacientePerfilRepository.save(existente));
                 })
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
+
+    public void deletarPaciente(Long id) {
+        Optional<PacientePerfil> paciente = pacientePerfilRepository.findById(id);
+
+        if (paciente.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Paciente Não Encontrado!", null);
+        }
+        pacientePerfilRepository.delete(paciente.get());
+    }
+
 }

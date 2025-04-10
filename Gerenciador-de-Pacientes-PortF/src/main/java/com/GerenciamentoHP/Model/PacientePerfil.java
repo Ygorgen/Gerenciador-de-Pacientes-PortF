@@ -13,6 +13,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -33,7 +34,6 @@ public class PacientePerfil {
 
     private Integer rg;
 
-    
     private LocalDate dataNascimento;
 
     private String plano;
@@ -48,8 +48,8 @@ public class PacientePerfil {
     @JsonIgnoreProperties("pacientePerfil")
     private List<FichaPaciente> fichaPaciente;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pacientePerfil", cascade = CascadeType.REMOVE)
-	@JsonIgnoreProperties("pacientePerfil")
-	private List<Setor> setor;
+    @ManyToOne
+    @JsonIgnoreProperties("pacientes")
+    private Setor setor;
 
 }

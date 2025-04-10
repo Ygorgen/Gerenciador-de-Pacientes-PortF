@@ -1,11 +1,15 @@
 package com.GerenciamentoHP.Model;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -22,8 +26,8 @@ public class Setor {
     @NotBlank
     private String nome;
 
-    @ManyToOne
-	@JsonIgnoreProperties("pacientePerfil")
-	private PacientePerfil pacientePerfil;
-    
+    @OneToMany(mappedBy = "setor", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("setor")
+    private List<PacientePerfil> pacientes;
+
 }
